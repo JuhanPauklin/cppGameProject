@@ -8,13 +8,15 @@
 #include "Game_Object.hpp"
 int main()
 {
-    // WINDOW
+    // Text
+    sf::Font font("./Blox2.ttf");
+    sf::Text healthText(font, "hp 100", 40);
 
+    // WINDOW
     sf::Vector2u window_size{ 640,480 };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
-    sf::CircleShape shape(5.f);
-    shape.setFillColor(sf::Color::Green);
+    Player player(5.f);
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
 
@@ -60,7 +62,7 @@ int main()
         }
 
         // then apply movement
-        shape.move(movement * deltaTime);
+        player.move(movement * deltaTime);
         int i = 0;
         for (int i = enemies.size() - 1; i >= 0; --i) {
             std::shared_ptr<Enemy> enemy = enemies.at(i);
@@ -69,16 +71,30 @@ int main()
             for (auto& p : newProjectiles) {
                 allProjectiles.push_back(p);
             }
-
-            // move all projectiles
-            for (auto& p : allProjectiles) {
-                p->move();
-            }
-
         }
+        // move all projectiles
+        for (auto it = allProjectiles.begin(); it != allProjectiles.end();) {
+            if (*it) {
+                (*it)->move();
+                (*it)->inHitbox(player, *it); // If in hitbox, remove projectile
+                if (!*it) {
+                    it = allProjectiles.erase(it); // Remove the null pointer from the vector
+                }
+                else {
+                    ++it;
+                }
+            }
+            else {
+                ++it;
+            }
+        }
+
+		// Update health text
+		healthText.setString("hp " + std::to_string(player.getHealth()));
         //draw shapes
         window.clear(sf::Color::Black);
-        window.draw(shape);
+        window.draw(healthText);
+        window.draw(player);
         for (auto& p : allProjectiles) {
             window.draw(*p);
         }

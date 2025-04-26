@@ -5,7 +5,27 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-class Projectile : public sf::Drawable{
+
+class Player : public sf::CircleShape {
+private:
+	int health;
+public:
+	Player(float radius) : sf::CircleShape(radius) {
+		health = 100;
+		setFillColor(sf::Color::Green);
+	}
+
+	int getHealth() {
+		return health;
+	}
+
+	void setHealth(int nhealth) {
+		health = nhealth;
+	}
+
+};
+
+class Projectile : public sf::Drawable, public sf::Transformable {
 private:
 	int length;
 	int width;
@@ -14,7 +34,7 @@ private:
 	sf::Vector2f movement;
 public:
 	Projectile() {
-		length = 10; // make it bigger so you can see
+		length = 10;
 		width = 10;
 		isShown = true;
 		position.x = 0;
@@ -43,8 +63,6 @@ public:
 		movement.y = vec.y;
 	}
 	~Projectile() {
-		// Optional: clean-up code
-		// For now, nothing special to delete
 	}
 	void setPosition(sf::Vector2f nposition) {
 		position.x = nposition.x;
@@ -56,19 +74,29 @@ public:
 	void move() {
 		this->setPosition(position + movement);
 	}
+
+	void inHitbox(Player& target, std::shared_ptr<Projectile>& self) {
+		sf::Vector2f targetPos = target.getPosition();
+		float targerRadius = target.getRadius() * 2;
+		if (position.x > targetPos.x && position.x < targetPos.x + targerRadius &&
+			position.y > targetPos.y && position.y < targetPos.y + targerRadius) {
+			target.setHealth(target.getHealth() - 1);
+			self.reset();
+		}
+	}
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		if (!isShown) return;
 		sf::CircleShape circle;
-		circle.setRadius(length / 2.0f);    // Circle needs a radius
+		circle.setRadius(length / 2.0f);
 		circle.setPosition(position);
-		circle.setFillColor(sf::Color::Red); // Set a color if you want
+		circle.setFillColor(sf::Color::Red);
 
 		target.draw(circle, states);
 	}
 };
 
-class Enemy : public sf::Drawable {
+class Enemy : public sf::Drawable, public sf::Transformable {
 private:
 	int length;
 	int width;
@@ -83,7 +111,7 @@ private:
 	sf::Clock shootClock;
 public:
 	Enemy() {
-		length = 10; // make it bigger so you can see
+		length = 10;
 		width = 10;
 		isShown = true;
 		position.x = 0;
@@ -110,8 +138,6 @@ public:
 		shots = { sf::Vector2f(2,2), sf::Vector2f(-2,-2) };
 	}
 	~Enemy() {
-		// Optional: clean-up code
-		// For now, nothing special to delete
 	}
 	void setMovement(sf::Vector2f nmovement) {
 		movement.x = nmovement.x;
@@ -153,9 +179,9 @@ private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		if (!isShown) return;
 		sf::CircleShape circle;
-		circle.setRadius(length / 2.0f);    // Circle needs a radius
+		circle.setRadius(length / 2.0f);   
 		circle.setPosition(position);
-		circle.setFillColor(sf::Color::White); // Set a color if you want
+		circle.setFillColor(sf::Color::White);
 
 		target.draw(circle, states);
 	}
