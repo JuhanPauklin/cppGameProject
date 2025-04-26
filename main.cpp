@@ -15,13 +15,18 @@ int main()
 
     sf::CircleShape shape(5.f);
     shape.setFillColor(sf::Color::Green);
-    std::vector<std::shared_ptr<Projectile>> projectiles;
+    std::vector<std::shared_ptr<Enemy>> enemies;
+    std::vector<std::shared_ptr<Projectile>> allProjectiles;
+
     sf::Clock fpsClock;
     window.setFramerateLimit(100);
     int frameCount = 0;
+    sf::Clock clock;
     // Game Loop
     while (window.isOpen())
     {
+        sf::Time dt = clock.restart(); // restart clock and get elapsed time
+        float deltaTime = dt.asSeconds(); // get seconds as a float
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
@@ -30,51 +35,55 @@ int main()
             }
             else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
-                sf::Vector2f move;
                 if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
                     window.close();
                 }
-                if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
-                    move.x = 0;
-                    move.y = 5;
-                    shape.move(move);
-                }
-                if (keyPressed->scancode == sf::Keyboard::Scancode::A) {
-                    move.x = -5;
-                    move.y = 0;
-                    shape.move(move);
-                }
-                if (keyPressed->scancode == sf::Keyboard::Scancode::W) {
-                    move.x = 0;
-                    move.y = -5;
-                    shape.move(move);
-                }
-                if (keyPressed->scancode == sf::Keyboard::Scancode::D) {
-                    move.x = 5;
-                    move.y = 0;
-                    shape.move(move);
-                }
                 if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
-                    auto projectile = std::make_shared<Projectile>(50, 50); // ✅ make shared pointer
-                    projectiles.push_back(projectile);
+                    auto enemy = std::make_shared<Enemy>(50, 50);
+                    enemies.push_back(enemy);
                 }
             }
         }
-        //move
+        sf::Vector2f movement(0.f, 0.f);
+        float speed = 100.0f;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+            movement.y -= speed; // move up
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+            movement.y += speed; // move down
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+            movement.x -= speed; // move left
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+            movement.x += speed; // move right
+        }
+
+        // then apply movement
+        shape.move(movement * deltaTime);
+        int i = 0;
+        for (int i = enemies.size() - 1; i >= 0; --i) {
+            std::shared_ptr<Enemy> enemy = enemies.at(i);
+            // update enemy
+            std::vector<std::shared_ptr<Projectile>> newProjectiles = enemy->update();
+            for (auto& p : newProjectiles) {
+                allProjectiles.push_back(p);
+            }
+
+            // move all projectiles
+            for (auto& p : allProjectiles) {
+                p->move();
+            }
+
+        }
+        //draw shapes
         window.clear(sf::Color::Black);
         window.draw(shape);
-        int i = 0;
-        for (int i = projectiles.size() - 1; i >= 0; --i) {
-            projectiles[i]->move();
-            if (projectiles[i]->getPosition().x >= window_size.x
-                || projectiles[i]->getPosition().y >= window_size.y
-                || projectiles[i]->getPosition().x < 0
-                || projectiles[i]->getPosition().y < 0) {
-                projectiles.erase(projectiles.begin() + i); // Erase using iterator
-            }
-            else {
-                window.draw(*projectiles[i]);
-            }
+        for (auto& p : allProjectiles) {
+            window.draw(*p);
+        }
+        for (auto& enemy : enemies) {
+            window.draw(*enemy);
         }
         window.display();
         // Count frame
