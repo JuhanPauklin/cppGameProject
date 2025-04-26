@@ -5,7 +5,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include <vector>
-#include "Game_Object.hpp"
+#include "Projectile.hpp"
+#include "Enemy.hpp"
 int main()
 {
     // WINDOW
@@ -25,8 +26,9 @@ int main()
     // Game Loop
     while (window.isOpen())
     {
-        sf::Time dt = clock.restart(); // restart clock and get elapsed time
-        float deltaTime = dt.asSeconds(); // get seconds as a float
+        sf::Time dt = clock.restart();
+        float deltaTime = dt.asSeconds();
+
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
@@ -44,41 +46,61 @@ int main()
                 }
             }
         }
+
         sf::Vector2f movement(0.f, 0.f);
         float speed = 100.0f;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-            movement.y -= speed; // move up
+            movement.y -= speed;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-            movement.y += speed; // move down
+            movement.y += speed;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-            movement.x -= speed; // move left
+            movement.x -= speed;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-            movement.x += speed; // move right
+            movement.x += speed;
         }
 
-        // then apply movement
         shape.move(movement * deltaTime);
-        int i = 0;
-        for (int i = enemies.size() - 1; i >= 0; --i) {
-            std::shared_ptr<Enemy> enemy = enemies.at(i);
-            // update enemy
+
+        // --- Update Enemies ---
+        for (auto& enemy : enemies) {
             std::vector<std::shared_ptr<Projectile>> newProjectiles = enemy->update();
             for (auto& p : newProjectiles) {
                 allProjectiles.push_back(p);
             }
-
-            // move all projectiles
-            for (auto& p : allProjectiles) {
-                p->move();
-            }
-
         }
-        //draw shapes
+
+        // --- Move Projectiles ---
+        for (auto& p : allProjectiles) {
+            p->move(deltaTime);
+        }
+
+        // --- Delete projectiles out of bounds ---
+        allProjectiles.erase(
+            std::remove_if(allProjectiles.begin(), allProjectiles.end(),
+                [&](const std::shared_ptr<Projectile>& p) {
+                    sf::Vector2f pos = p->getPosition();
+                    return pos.x < 0 || pos.x > window_size.x || pos.y < 0 || pos.y > window_size.y;
+                }),
+            allProjectiles.end()
+        );
+
+        // --- Delete enemies out of bounds ---
+        enemies.erase(
+            std::remove_if(enemies.begin(), enemies.end(),
+                [&](const std::shared_ptr<Enemy>& e) {
+                    sf::Vector2f pos = e->getPosition();
+                    return pos.x < 0 || pos.x > window_size.x || pos.y < 0 || pos.y > window_size.y;
+                }),
+            enemies.end()
+        );
+
+        // --- Draw ---
         window.clear(sf::Color::Black);
         window.draw(shape);
+
         for (auto& p : allProjectiles) {
             window.draw(*p);
         }
@@ -86,17 +108,16 @@ int main()
             window.draw(*enemy);
         }
         window.display();
-        // Count frame
-        frameCount++;
 
-        // If 1 second passed, output FPS
+        // --- FPS Counter ---
+        frameCount++;
         if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
             std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             fpsClock.restart();
         }
-        
     }
+
 
     // End of application
     return 0;
