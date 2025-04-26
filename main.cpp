@@ -16,6 +16,9 @@ int main()
     sf::CircleShape shape(5.f);
     shape.setFillColor(sf::Color::Green);
     std::vector<std::shared_ptr<Projectile>> projectiles;
+    sf::Clock fpsClock;
+    window.setFramerateLimit(100);
+    int frameCount = 0;
     // Game Loop
     while (window.isOpen())
     {
@@ -74,6 +77,15 @@ int main()
             }
         }
         window.display();
+        // Count frame
+        frameCount++;
+
+        // If 1 second passed, output FPS
+        if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
+            std::cout << "FPS: " << frameCount << std::endl;
+            frameCount = 0;
+            fpsClock.restart();
+        }
         
     }
 
