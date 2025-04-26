@@ -75,6 +75,8 @@ public:
 		this->setPosition(position + movement);
 	}
 
+	// Check if the projectile is in the hitbox of the player
+	// If it is, delete the projectile and decrease the player's health
 	void inHitbox(Player& target, std::shared_ptr<Projectile>& self) {
 		sf::Vector2f targetPos = target.getPosition();
 		float targerRadius = target.getRadius() * 2;
