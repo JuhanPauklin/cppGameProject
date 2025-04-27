@@ -9,13 +9,15 @@
 #include "Enemy.hpp"
 int main()
 {
-    // WINDOW
+    // Text
+    sf::Font font("./Blox2.ttf");
+    sf::Text healthText(font, "hp 100", 40);
 
+    // WINDOW
     sf::Vector2u window_size{ 640,480 };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
-    sf::CircleShape shape(5.f);
-    shape.setFillColor(sf::Color::Green);
+    Player player(5.f);
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
 
@@ -62,45 +64,40 @@ int main()
             movement.x += speed;
         }
 
-        shape.move(movement * deltaTime);
-
-        // --- Update Enemies ---
-        for (auto& enemy : enemies) {
+        // then apply movement
+        player.move(movement * deltaTime);
+        int i = 0;
+        for (int i = enemies.size() - 1; i >= 0; --i) {
+            std::shared_ptr<Enemy> enemy = enemies.at(i);
+            // update enemy
             std::vector<std::shared_ptr<Projectile>> newProjectiles = enemy->update();
             for (auto& p : newProjectiles) {
                 allProjectiles.push_back(p);
             }
         }
-
-        // --- Move Projectiles ---
-        for (auto& p : allProjectiles) {
-            p->move(deltaTime);
+        // move all projectiles
+        for (auto it = allProjectiles.begin(); it != allProjectiles.end();) {
+            if (*it) {
+                (*it)->move(deltaTime);
+                (*it)->inHitbox(player, *it); // If in hitbox, remove projectile
+                if (!*it) {
+                    it = allProjectiles.erase(it); // Remove the null pointer from the vector
+                }
+                else {
+                    ++it;
+                }
+            }
+            else {
+                ++it;
+            }
         }
 
-        // --- Delete projectiles out of bounds ---
-        allProjectiles.erase(
-            std::remove_if(allProjectiles.begin(), allProjectiles.end(),
-                [&](const std::shared_ptr<Projectile>& p) {
-                    sf::Vector2f pos = p->getPosition();
-                    return pos.x < 0 || pos.x > window_size.x || pos.y < 0 || pos.y > window_size.y;
-                }),
-            allProjectiles.end()
-        );
-
-        // --- Delete enemies out of bounds ---
-        enemies.erase(
-            std::remove_if(enemies.begin(), enemies.end(),
-                [&](const std::shared_ptr<Enemy>& e) {
-                    sf::Vector2f pos = e->getPosition();
-                    return pos.x < 0 || pos.x > window_size.x || pos.y < 0 || pos.y > window_size.y;
-                }),
-            enemies.end()
-        );
-
-        // --- Draw ---
+		// Update health text
+		healthText.setString("hp " + std::to_string(player.getHealth()));
+        //draw shapes
         window.clear(sf::Color::Black);
-        window.draw(shape);
-
+        window.draw(healthText);
+        window.draw(player);
         for (auto& p : allProjectiles) {
             window.draw(*p);
         }

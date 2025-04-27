@@ -1,36 +1,41 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 
-class GameObject : public sf::Drawable {
-protected:
-    sf::Vector2f position;
-    sf::Vector2f movement;
-
+class Player : public sf::CircleShape {
+private:
+	int health;
 public:
-    GameObject() : position(0.0f, 0.0f) {}
-    virtual ~GameObject() {}
+	Player(float radius) : sf::CircleShape(radius) {
+		health = 100;
+		setFillColor(sf::Color::Green);
+	}
 
-    // Getter and setter for position
-    void setPosition(sf::Vector2f newPosition) {
-        position = newPosition;
-    }
+	int getHealth() {
+		return health;
+	}
 
-    sf::Vector2f getPosition() const {
-        return position;
-    }
+	void setHealth(int nhealth) {
+		health = nhealth;
+	}
 
-    // Getter and setter for position
-    void setMovement(sf::Vector2f newMovement) {
-        position = newMovement;
-    }
-
-    sf::Vector2f getMovement() const {
-        return movement;
-    }
-
-    // Virtual function to be overridden by derived classes
-    virtual void move(float deltaTime) = 0;
-
-    // Pure virtual draw function that must be implemented by derived classes
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
+};
+class GameObject : public sf::Drawable, public sf::Transformable {
+private:
+	sf::Vector2f movement;
+	sf::Vector2f position;
+public:
+	GameObject() = default;
+	virtual ~GameObject() = default;
+	sf::Vector2f getMovement() {
+		return movement;
+	}
+	sf::Vector2f getPosition() {
+		return position;
+	}
+protected:
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
 };
