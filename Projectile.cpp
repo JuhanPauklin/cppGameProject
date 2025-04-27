@@ -1,5 +1,6 @@
 #include "Projectile.hpp"
 #include "Enemy.hpp"
+#include "Player.hpp"
 #include <iostream>
 
 Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shared_ptr<GameObject> enemy)

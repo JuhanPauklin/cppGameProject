@@ -7,6 +7,7 @@
 #include <vector>
 #include "Projectile.hpp"
 #include "Enemy.hpp"
+#include "Player.hpp"
 
 
 int main()
@@ -18,14 +19,16 @@ int main()
     // WINDOW
     sf::Vector2u window_size{ 640,480 };
     sf::Vector2f window_sizef{ 640.0f,480.0f };
-	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
+	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * 0.75f };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
-    Player player(5.f);
-	player.setPosition(player_start_pos);
-
+    Player player;   
+    player.setPosition(player_start_pos);
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
+
+    auto enemy = std::make_shared<Enemy>(50, 50);
+    enemies.push_back(enemy);
 
     sf::Clock fpsClock;
     window.setFramerateLimit(100);
@@ -49,8 +52,7 @@ int main()
                     window.close();
                 }
                 if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
-                    auto enemy = std::make_shared<Enemy>(50, 50);
-                    enemies.push_back(enemy);
+
                 }
             }
         }
@@ -136,6 +138,7 @@ int main()
         //draw shapes
         window.clear(sf::Color::Black);
         window.draw(healthText);
+		std::cout << "Player position: " << player.getPosition().x << ", " << player.getPosition().y << std::endl;
         window.draw(player);
         for (auto& p : allProjectiles) {
             window.draw(*p);

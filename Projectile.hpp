@@ -3,6 +3,7 @@
 #include <memory>
 #include <cmath>
 #include "Game_Object.hpp"  // Include the GameObject header
+#include "Player.hpp"
 class Projectile : public GameObject {
 private:
     int length;
