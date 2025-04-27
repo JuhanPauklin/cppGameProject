@@ -101,13 +101,23 @@ int main()
                 it = allProjectiles.erase(it); // erase invalid pointer
             }
         }
+		// move all enemies
         for (auto it = enemies.begin(); it != enemies.end(); ) {
             if (*it) {
-                sf::Vector2f vec = (*it)->getPosition();
+                sf::Vector2f enemyPos = (*it)->getPosition();
                 (*it)->move(deltaTime);
 
-                if (vec.x > window_sizef.x + 10 || vec.y > window_sizef.y + 10 ||
-                    vec.x < -10 || vec.y < -10 || !*it)
+				// move back and forth if near the window edges and moving out of bounds
+                if (enemyPos.x > window_sizef.x * static_cast<float>(0.95) && (*it)->getMovement().x > 0) {
+					(*it)->turnAround();
+				}
+                else if (enemyPos.x < window_sizef.x * static_cast<float>(0.05) && (*it)->getMovement().x < 0) {
+					(*it)->turnAround();
+				}
+
+                // if enemy outside of windows
+                if (enemyPos.x > window_sizef.x + 10 || enemyPos.y > window_sizef.y + 10 ||
+                    enemyPos.x < -10 || enemyPos.y < -10 || !*it)
                 {
                     it = enemies.erase(it); // erase returns the new valid iterator
                 }

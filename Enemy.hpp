@@ -21,12 +21,14 @@ public:
     Enemy();
     Enemy(float nx, float ny);
     ~Enemy();
-
+    
+	sf::Vector2f getMovement();
     void setMovement(sf::Vector2f nmovement);
     void setPosition(sf::Vector2f nposition);
     std::vector<std::shared_ptr<Projectile>> update();
     std::vector<std::shared_ptr<Projectile>> shoot();
     void move(float deltaTime);
+	void turnAround();
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

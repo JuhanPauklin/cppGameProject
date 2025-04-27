@@ -20,7 +20,7 @@ Enemy::Enemy(float nx, float ny) {
     width = 10;
     isShown = true;
     setPosition({ nx, ny });
-    setMovement({ 100, 100 });
+    setMovement({ 100, 0 });
     shotCount = 0;
     burst = 3;
     delay = 0.5f;
@@ -29,6 +29,8 @@ Enemy::Enemy(float nx, float ny) {
 }
 
 Enemy::~Enemy() {}
+
+sf::Vector2f Enemy::getMovement() { return movement; }
 
 void Enemy::setMovement(sf::Vector2f nmovement) {
     movement = nmovement;
@@ -82,4 +84,9 @@ void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     circle.setFillColor(sf::Color::White);
 
     target.draw(circle, states);
+}
+
+void Enemy::turnAround() {
+	movement.x = -movement.x;
+	movement.y = -movement.y;
 }
