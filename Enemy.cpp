@@ -22,8 +22,8 @@ Enemy::Enemy(float nx, float ny) {
     shotCount = 0;
     burst = 1;
     delay = 0.5f;
-    shotSpeeds = { 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f };
-    movTypes = { 5, 0, 1, 2, 3, 4 };
+    shotSpeeds = { 200.0f, 200.0f, 200.0f, 200.0f, 50.0f};
+    movTypes = { 1, 2, 3, 4, 5 };
 }
 
 Enemy::~Enemy() {}
