@@ -71,12 +71,15 @@ void Projectile::move(float deltaTime) {
             movement = { speed, -speed };
             break;
         case 2:
+            movement = { -speed, -speed };
+            break;
+        case 3:
+            movement = { -speed, speed };
+            break;
+        case 4:
             // Example sinusoidal motion
             movement.x = std::sin(position.y * 0.05f) * 200.0f * 0.05f;
             movement.y = speed;
-            break;
-        case 3:
-            // Empty for now
             break;
         }
         this->setPosition(position + movement * deltaTime);

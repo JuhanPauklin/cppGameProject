@@ -12,7 +12,7 @@ Enemy::Enemy() {
     burst = 2;
     delay = 0.5f;
     shotSpeeds = { 50.0f, 50.0f };
-    movTypes = { 5, 5 };
+    movTypes = { 5, 0, 1, 2, 3, 4 };
 }
 
 Enemy::Enemy(float nx, float ny) {
@@ -24,8 +24,8 @@ Enemy::Enemy(float nx, float ny) {
     shotCount = 0;
     burst = 3;
     delay = 0.5f;
-    shotSpeeds = { 50.0f, 50.0f, 50.0f };
-    movTypes = { 5, 0, 1};
+    shotSpeeds = { 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f };
+    movTypes = { 5, 0, 1, 2, 3, 4 };
 }
 
 Enemy::~Enemy() {}

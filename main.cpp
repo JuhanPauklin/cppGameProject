@@ -16,8 +16,8 @@ int main()
     sf::Text healthText(font, "hp 100", 40);
 
     // WINDOW
-    sf::Vector2u window_size{ 640,480 };
-    sf::Vector2f window_sizef{ 640.0f,480.0f };
+    sf::Vector2u window_size{ 1280,720 };
+    sf::Vector2f window_sizef{ 1280.0f,720.0f };
 	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
@@ -57,6 +57,9 @@ int main()
 
         sf::Vector2f movement(0.f, 0.f);
         float speed = 100.0f;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+            speed=33;
+        }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
             movement.y -= speed;
         }
