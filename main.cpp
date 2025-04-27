@@ -20,7 +20,7 @@ int main()
     sf::Vector2u window_size{ 1280,720 };
     sf::Vector2f window_sizef{ 1280.0f,720.0f };
 	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
-    sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(window_size), "Tohoo Tonti", sf::Style::Titlebar | sf::Style::Close);
 
     auto player = std::make_shared<Player>();
     (*player).setPosition(player_start_pos);
@@ -57,9 +57,9 @@ int main()
         }
 
         sf::Vector2f movement(0.f, 0.f);
-        float speed = 100.0f;
+        float speed = 150.0f;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
-            speed=33;
+            speed=50.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
             movement.y -= speed;
@@ -202,6 +202,8 @@ int main()
         // --- FPS Counter ---
         frameCount++;
         if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
+            auto enemy = std::make_shared<Enemy>(50, 50);
+            enemies.push_back(enemy);
             std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             fpsClock.restart();
