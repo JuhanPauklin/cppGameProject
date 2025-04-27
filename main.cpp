@@ -26,11 +26,13 @@ int main()
     (*player).setPosition(player_start_pos);
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
+    std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
 
     auto enemy = std::make_shared<Enemy>(50, 50);
     enemies.push_back(enemy);
 
     sf::Clock fpsClock;
+    sf::Clock playerShotClock;
     window.setFramerateLimit(100);
     int frameCount = 0;
     sf::Clock clock;
@@ -50,12 +52,6 @@ int main()
             {
                 if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
                     window.close();
-                }
-                if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
-                    std::vector<std::shared_ptr<Projectile>> newProjectiles = (*player).shoot();
-                    for (auto& p : newProjectiles) {
-                        allProjectiles.push_back(p);
-                    }
                 }
             }
         }
@@ -77,64 +73,111 @@ int main()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
             movement.x += speed;
         }
-
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space)) {
+            if (playerShotClock.getElapsedTime().asMilliseconds()>100) {
+                std::vector<std::shared_ptr<Projectile>> newProjectiles = (*player).shoot();
+                for (auto& p : newProjectiles) {
+                    allPlayerProjectiles.push_back(p);
+                }
+                playerShotClock.restart();
+            }
+        }
         // then apply movement
         (*player).move(movement * deltaTime);
         int i = 0;
-        for (int i = enemies.size() - 1; i >= 0; --i) {
-            std::shared_ptr<Enemy> enemy = enemies.at(i);
-            // update enemy
-            std::vector<std::shared_ptr<Projectile>> newProjectiles = enemy->update();
-            for (auto& p : newProjectiles) {
-                allProjectiles.push_back(p);
-            }
-        }
         // move all projectiles
-        for (auto it = allProjectiles.begin(); it != allProjectiles.end(); ) {
-            if (*it) {
-                sf::Vector2f vec = (*it)->getPosition();
-                (*it)->move(deltaTime);
-                (*it)->inHitbox((*player), *it);
+        auto isOutOfBounds = [&](const sf::Vector2f& pos) -> bool {
+            return (pos.x > window_sizef.x + 10 || pos.y > window_sizef.y + 10 ||
+                pos.x < -10 || pos.y < -10);
+            };
 
-                if (vec.x > window_sizef.x + 10 || vec.y > window_sizef.y + 10 ||
-                    vec.x < -10 || vec.y < -10 || !*it)
-                {
-                    it = allProjectiles.erase(it); // erase returns the new valid iterator
+        // Move and handle all enemy projectiles
+        for (auto it = allProjectiles.begin(); it != allProjectiles.end();) {
+            if (*it) {
+                (*it)->move(deltaTime);
+
+                // Check collision with player
+                if ((*it)->inHitbox(*player)) {
+                    player->setHealth(player->getHealth()-1); // if you have getDamage()
+                    it = allProjectiles.erase(it);
+                    continue;
+                }
+
+                sf::Vector2f pos = (*it)->getPosition();
+                if (isOutOfBounds(pos)) {
+                    it = allProjectiles.erase(it);
                 }
                 else {
                     ++it;
                 }
             }
             else {
-                it = allProjectiles.erase(it); // erase invalid pointer
+                it = allProjectiles.erase(it);
             }
         }
-		// move all enemies
-        for (auto it = enemies.begin(); it != enemies.end(); ) {
+
+        // Move and handle all player projectiles
+        for (auto it = allPlayerProjectiles.begin(); it != allPlayerProjectiles.end();) {
             if (*it) {
-                sf::Vector2f enemyPos = (*it)->getPosition();
                 (*it)->move(deltaTime);
 
-				// move back and forth if near the window edges and moving out of bounds
-                if (enemyPos.x > window_sizef.x * static_cast<float>(0.95) && (*it)->getMovement().x > 0) {
-					(*it)->turnAround();
-				}
-                else if (enemyPos.x < window_sizef.x * static_cast<float>(0.05) && (*it)->getMovement().x < 0) {
-					(*it)->turnAround();
-				}
+                bool hit = false;
 
-                // if enemy outside of windows
-                if (enemyPos.x > window_sizef.x + 10 || enemyPos.y > window_sizef.y + 10 ||
-                    enemyPos.x < -10 || enemyPos.y < -10 || !*it)
-                {
-                    it = enemies.erase(it); // erase returns the new valid iterator
+                // check collision with all enemies
+                for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+                    if (*enemyIt && (*it)->inHitbox(**enemyIt)) {
+                        (*enemyIt)->setHealth((*enemyIt)->getHealth()-1); // optional: enemy takes damage
+                        hit = true;
+                        break;
+                    }
+                }
+
+                if (hit) {
+                    it = allPlayerProjectiles.erase(it);
+                    continue;
+                }
+
+                sf::Vector2f pos = (*it)->getPosition();
+                if (isOutOfBounds(pos)) {
+                    it = allPlayerProjectiles.erase(it);
                 }
                 else {
                     ++it;
                 }
             }
             else {
-                it = enemies.erase(it); // erase invalid pointer
+                it = allPlayerProjectiles.erase(it);
+            }
+        }
+
+
+        // Move and handle all enemies
+        for (auto it = enemies.begin(); it != enemies.end();) {
+            if (*it) {
+                (*it)->move(deltaTime);
+                std::vector<std::shared_ptr<Projectile>> newProjectiles = (*it)->update();
+                for (auto& p : newProjectiles) {
+                    allProjectiles.push_back(p);
+                }
+
+                sf::Vector2f pos = (*it)->getPosition();
+
+                // If near window edges and moving outward, turn around
+                const auto& movement = (*it)->getMovement();
+                if ((pos.x > window_sizef.x * 0.95f && movement.x > 0) ||
+                    (pos.x < window_sizef.x * 0.05f && movement.x < 0)) {
+                    (*it)->turnAround();
+                }
+
+                if (isOutOfBounds(pos) || (*it)->getHealth() <= 0) {
+                    it = enemies.erase(it);
+                }
+                else {
+                    ++it;
+                }
+            }
+            else {
+                it = enemies.erase(it);
             }
         }
 
@@ -146,6 +189,9 @@ int main()
         window.draw(healthText);
         window.draw((*player));
         for (auto& p : allProjectiles) {
+            window.draw(*p);
+        }
+        for (auto& p : allPlayerProjectiles) {
             window.draw(*p);
         }
         for (auto& enemy : enemies) {

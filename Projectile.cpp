@@ -5,6 +5,7 @@
 
 Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shared_ptr<GameObject> enemy)
 {
+    setHealth(1);
     length = 10;
     width = 10;
     isShown = true;
@@ -13,6 +14,7 @@ Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shar
     moveType = nmovType;
     parentEnemy = enemy;
     startPosition = {nx,ny};
+    speedMod = 1.0f;
     parent_movement = enemy->getMovement();
     lastCenterPosition = startPosition;
     if (nmovType == 5) { // Spiral mode
@@ -29,12 +31,34 @@ Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shar
 
 // Linear projectile constructor
 Projectile::Projectile(float nx, float ny, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy) {
+    setHealth(1);
     length = 10;
     width = 10;
     isShown = true;
     position = { nx, ny };
     movement = nmovement;
     speed = 50.0f;
+    moveType = 0;
+    speedMod = 1.0f;
+    parentEnemy = enemy;
+    startPosition = { nx,ny };
+    parent_movement = enemy->getMovement();
+    lastCenterPosition = startPosition;
+    isSpiraling = false;
+    orbitAngle = 180.0f;
+    orbitRadius = 10.0f;
+    spiralSpeed = 50.0f * 3.6f; // degrees per second
+    radiusSpeed = 50.0f;  // units per second
+}
+Projectile::Projectile(float nx, float ny,float nspeedMod, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy) {
+    setHealth(1);
+    length = 10;
+    width = 10;
+    isShown = true;
+    position = { nx, ny };
+    movement = nmovement;
+    speed = 50.0f;
+    speedMod = nspeedMod;
     moveType = 0;
     parentEnemy = enemy;
     startPosition = { nx,ny };
@@ -103,7 +127,7 @@ void Projectile::move(float deltaTime) {
             customMovement.y = speed;
             break;
         }
-        this->setPosition(position + customMovement * deltaTime);
+        this->setPosition(position + (customMovement * deltaTime * speedMod));
     }
 }
 
@@ -119,12 +143,12 @@ void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 
-void Projectile::inHitbox(Player& target, std::shared_ptr<Projectile>& self) {
+bool Projectile::inHitbox(GameObject& target) {
     sf::Vector2f targetPos = target.getPosition();
-    float targerRadius = target.getRadius() * 2;
-    if (position.x > targetPos.x && position.x < targetPos.x + targerRadius &&
-        position.y > targetPos.y && position.y < targetPos.y + targerRadius) {
-        target.setHealth(target.getHealth() - 1);
-        self.reset();
+    float targetRadius = target.getRadius() * 2;
+    if (position.x > targetPos.x && position.x < targetPos.x + targetRadius &&
+        position.y > targetPos.y && position.y < targetPos.y + targetRadius) {
+        return true;
     }
+    return false;
 }

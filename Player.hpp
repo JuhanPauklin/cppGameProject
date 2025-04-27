@@ -10,36 +10,23 @@ class Player : public GameObject, public std::enable_shared_from_this<Player> {
 private:
 	int length;
 	int width;
-	float radius;
-	sf::Vector2f position;
-	int health;
 public:
 	Player();
 	~Player();
 
-	float getRadius() {
-		return radius;
-	}
-
-	int getHealth() {
-		return health;
-	}
-
-	void setHealth(int nhealth) {
-		health = nhealth;
-	}
-
-	sf::Vector2f getPosition() {
-		return position;
-	}
+	// No need to re-implement getRadius, getHealth, getPosition, etc.
+	// Just use the ones from GameObject directly!
 
 	void setPosition(sf::Vector2f nposition) {
 		position = nposition;
 	}
 
+	void move(sf::Vector2f deltaMovement) {
+		position += deltaMovement;
+	}
+
 	sf::Vector2f getMovement();
 	void setMovement(sf::Vector2f nmovement);
-	void move(sf::Vector2f deltaMovement);
 
 	std::vector<std::shared_ptr<Projectile>> shoot();
 protected:

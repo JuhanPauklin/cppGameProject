@@ -5,10 +5,12 @@
 Enemy::Enemy() {
     length = 10;
     width = 10;
-    setPosition({ 0, 0 });
+    setPosition({ 10, 10});
     setMovement({ 100, 100 });
+    setRadius(5);
+    setHealth(1);
     shotCount = 0;
-    burst = 2;
+    burst = 3;
     delay = 0.5f;
     shotSpeeds = { 50.0f, 50.0f };
     movTypes = { 5, 0, 1, 2, 3, 4 };
@@ -19,8 +21,10 @@ Enemy::Enemy(float nx, float ny) {
     width = 10;
     setPosition({ nx, ny });
     setMovement({ 100, 0 });
+    setRadius(5);
+    setHealth(1);
     shotCount = 0;
-    burst = 1;
+    burst = 6;
     delay = 0.5f;
     shotSpeeds = { 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f };
     movTypes = { 5, 0, 1, 2, 3, 4 };
@@ -66,7 +70,7 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
             position.y,
             shotSpeed,
             movTypes.at(shotCount),
-            shared_from_this() // pass this enemy
+            shared_from_this()
         ));
         shotCount++;
     }

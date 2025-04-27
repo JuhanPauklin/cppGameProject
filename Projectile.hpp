@@ -19,12 +19,14 @@ private:
     float spiralSpeed;
     float radiusSpeed;
     bool isSpiraling;
+    float speedMod;
     sf::Vector2f parent_movement;
     sf::Vector2f lastCenterPosition;
 
 public:
     Projectile(float nx, float ny, float nspeed, int nmovType, std::shared_ptr<GameObject> enemy);
     Projectile(float nx, float ny, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy);
+    Projectile(float nx, float ny, float speedMod, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy);
     ~Projectile();
 
     // Getter and setter
@@ -35,5 +37,5 @@ public:
     void move(float deltaTime);
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-    void inHitbox(Player& target, std::shared_ptr<Projectile>& self);
+    bool inHitbox(GameObject& target);
 };
