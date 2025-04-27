@@ -1,12 +1,13 @@
 #include "Enemy.hpp"
 #include "Projectile.hpp"
 
+
 Enemy::Enemy() {
     length = 10;
     width = 10;
     isShown = true;
-    position = { 0, 0 };
-    movement = { 100, 100 };
+    setPosition({ 0, 0 });
+    setMovement({ 100, 100 });
     shotCount = 0;
     burst = 2;
     delay = 0.5f;
@@ -18,8 +19,8 @@ Enemy::Enemy(float nx, float ny) {
     length = 10;
     width = 10;
     isShown = true;
-    position = { nx, ny };
-    movement = { 100, 100 };
+    setPosition({ nx, ny });
+    setMovement({ 100, 100 });
     shotCount = 0;
     burst = 2;
     delay = 0.5f;
@@ -30,21 +31,15 @@ Enemy::Enemy(float nx, float ny) {
 Enemy::~Enemy() {}
 
 void Enemy::setMovement(sf::Vector2f nmovement) {
-    movement = nmovement*100.0f;
+    movement = nmovement;
 }
 
-sf::Vector2f Enemy::getMovement()
-{
-    return movement;
-}
-
-sf::Vector2f Enemy::getPosition()
-{
-    return position;
+void Enemy::setPosition(sf::Vector2f nposition) {
+    position = nposition;
 }
 
 void Enemy::move(float deltaTime) {
-    position += movement * deltaTime;
+    setPosition(getPosition() + getMovement() * deltaTime);
 }
 
 std::vector<std::shared_ptr<Projectile>> Enemy::update() {

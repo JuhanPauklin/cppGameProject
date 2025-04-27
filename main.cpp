@@ -7,6 +7,8 @@
 #include <vector>
 #include "Projectile.hpp"
 #include "Enemy.hpp"
+
+
 int main()
 {
     // Text
@@ -15,6 +17,7 @@ int main()
 
     // WINDOW
     sf::Vector2u window_size{ 640,480 };
+    sf::Vector2f window_sizef{ 640.0f,480.0f };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
     Player player(5.f);
@@ -76,21 +79,44 @@ int main()
             }
         }
         // move all projectiles
-        for (auto it = allProjectiles.begin(); it != allProjectiles.end();) {
+        for (auto it = allProjectiles.begin(); it != allProjectiles.end(); ) {
             if (*it) {
+                sf::Vector2f vec = (*it)->getPosition();
                 (*it)->move(deltaTime);
-                (*it)->inHitbox(player, *it); // If in hitbox, remove projectile
-                if (!*it) {
-                    it = allProjectiles.erase(it); // Remove the null pointer from the vector
+                (*it)->inHitbox(player, *it);
+
+                if (vec.x > window_sizef.x + 10 || vec.y > window_sizef.y + 10 ||
+                    vec.x < -10 || vec.y < -10 || !*it)
+                {
+                    it = allProjectiles.erase(it); // erase returns the new valid iterator
                 }
                 else {
                     ++it;
                 }
             }
             else {
-                ++it;
+                it = allProjectiles.erase(it); // erase invalid pointer
             }
         }
+        for (auto it = enemies.begin(); it != enemies.end(); ) {
+            if (*it) {
+                sf::Vector2f vec = (*it)->getPosition();
+                (*it)->move(deltaTime);
+
+                if (vec.x > window_sizef.x + 10 || vec.y > window_sizef.y + 10 ||
+                    vec.x < -10 || vec.y < -10 || !*it)
+                {
+                    it = enemies.erase(it); // erase returns the new valid iterator
+                }
+                else {
+                    ++it;
+                }
+            }
+            else {
+                it = enemies.erase(it); // erase invalid pointer
+            }
+        }
+
 
 		// Update health text
 		healthText.setString("hp " + std::to_string(player.getHealth()));

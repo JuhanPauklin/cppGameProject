@@ -15,9 +15,7 @@ private:
     float delay;
     int shotCount;
     std::vector<float> shots;
-    sf::Vector2f movement;
     std::vector<int> movTypes;
-    sf::Vector2f position;
     sf::Clock shootClock;
 public:
     Enemy();
@@ -25,11 +23,10 @@ public:
     ~Enemy();
 
     void setMovement(sf::Vector2f nmovement);
-    sf::Vector2f getMovement();
-    sf::Vector2f getPosition();
-    void move(float deltaTime);
+    void setPosition(sf::Vector2f nposition);
     std::vector<std::shared_ptr<Projectile>> update();
     std::vector<std::shared_ptr<Projectile>> shoot();
+    void move(float deltaTime);
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

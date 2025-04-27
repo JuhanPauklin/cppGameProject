@@ -24,7 +24,7 @@ public:
 
 };
 class GameObject : public sf::Drawable, public sf::Transformable {
-private:
+protected:
 	sf::Vector2f movement;
 	sf::Vector2f position;
 public:

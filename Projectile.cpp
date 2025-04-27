@@ -10,8 +10,8 @@ Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shar
     position = { nx, ny };
     speed = nspeed;
     moveType = nmovType;
-    startPosition = enemy->getPosition();;
     parentEnemy = enemy;
+    startPosition = {nx,ny};
     parent_movement = enemy->getMovement();
     lastCenterPosition = startPosition;
     if (nmovType == 5) { // Spiral mode
@@ -46,13 +46,16 @@ void Projectile::move(float deltaTime) {
         float rad = orbitAngle * (3.14159265f / 180.0f);
 
         // Get the center of the spiral (enemy's position)
-        sf::Vector2f centerPosition = startPosition;
-
+        //sf::Vector2f centerPosition = startPosition;
+        sf::Vector2f centerPosition = lastCenterPosition;
         if (auto parent = parentEnemy.lock()) {
             // If the enemy is still alive, set the center to the enemy's position
             centerPosition = parent->getPosition();
         }
-
+        else {
+            centerPosition += parent_movement;
+        }
+        lastCenterPosition = centerPosition;
         // Calculate the new position in the spiral path
         position.x = centerPosition.x + std::cos(rad) * orbitRadius;
         position.y = centerPosition.y + std::sin(rad) * orbitRadius;
