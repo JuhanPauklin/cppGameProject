@@ -116,10 +116,10 @@ void Projectile::move(float deltaTime) {
             customMovement = { speed, -speed };
             break;
         case 2:
-            movement = { -speed, -speed };
+            customMovement = { -speed, -speed };
             break;
         case 3:
-            movement = { -speed, speed };
+            customMovement = { -speed, speed };
             break;
         case 4:
             // Example sinusoidal motion
