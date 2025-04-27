@@ -1,5 +1,6 @@
 #include "Projectile.hpp"
 #include "Enemy.hpp"
+#include "Player.hpp"
 #include <iostream>
 
 Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shared_ptr<GameObject> enemy)
@@ -24,6 +25,26 @@ Projectile::Projectile(float nx, float ny, float nspeed, int nmovType, std::shar
     orbitRadius = 10.0f;
     spiralSpeed = nspeed * 3.6f; // degrees per second
     radiusSpeed = nspeed;  // units per second
+}
+
+// Linear projectile constructor
+Projectile::Projectile(float nx, float ny, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy) {
+    length = 10;
+    width = 10;
+    isShown = true;
+    position = { nx, ny };
+    movement = nmovement;
+    speed = 50.0f;
+    moveType = 0;
+    parentEnemy = enemy;
+    startPosition = { nx,ny };
+    parent_movement = enemy->getMovement();
+    lastCenterPosition = startPosition;
+    isSpiraling = false;
+    orbitAngle = 180.0f;
+    orbitRadius = 10.0f;
+    spiralSpeed = 50.0f * 3.6f; // degrees per second
+    radiusSpeed = 50.0f;  // units per second
 }
 
 Projectile::~Projectile() {}
@@ -62,13 +83,13 @@ void Projectile::move(float deltaTime) {
     }
     else {
         // Non-spiraling movement behavior (based on moveType)
-        sf::Vector2f movement;
+        sf::Vector2f customMovement;
         switch (moveType) {
         case 0:
-            movement = { speed, speed };
+            customMovement = movement;
             break;
         case 1:
-            movement = { speed, -speed };
+            customMovement = { speed, -speed };
             break;
         case 2:
             movement = { -speed, -speed };
@@ -78,11 +99,11 @@ void Projectile::move(float deltaTime) {
             break;
         case 4:
             // Example sinusoidal motion
-            movement.x = std::sin(position.y * 0.05f) * 200.0f * 0.05f;
-            movement.y = speed;
+            customMovement.x = std::sin(position.y * 0.05f) * 200.0f * 0.05f;
+            customMovement.y = speed;
             break;
         }
-        this->setPosition(position + movement * deltaTime);
+        this->setPosition(position + customMovement * deltaTime);
     }
 }
 

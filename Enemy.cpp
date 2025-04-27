@@ -5,7 +5,6 @@
 Enemy::Enemy() {
     length = 10;
     width = 10;
-    isShown = true;
     setPosition({ 0, 0 });
     setMovement({ 100, 100 });
     shotCount = 0;
@@ -18,11 +17,10 @@ Enemy::Enemy() {
 Enemy::Enemy(float nx, float ny) {
     length = 10;
     width = 10;
-    isShown = true;
     setPosition({ nx, ny });
     setMovement({ 100, 0 });
     shotCount = 0;
-    burst = 3;
+    burst = 1;
     delay = 0.5f;
     shotSpeeds = { 50.0f, 50.0f, 50.0f, 50.0f, 50.0f, 50.0f };
     movTypes = { 5, 0, 1, 2, 3, 4 };
