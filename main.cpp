@@ -18,9 +18,12 @@ int main()
     // WINDOW
     sf::Vector2u window_size{ 640,480 };
     sf::Vector2f window_sizef{ 640.0f,480.0f };
+	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
     Player player(5.f);
+	player.setPosition(player_start_pos);
+
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
 

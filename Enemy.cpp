@@ -11,7 +11,7 @@ Enemy::Enemy() {
     shotCount = 0;
     burst = 2;
     delay = 0.5f;
-    shots = { 50.0f, 50.0f };
+    shotSpeeds = { 50.0f, 50.0f };
     movTypes = { 5, 5 };
 }
 
@@ -22,10 +22,10 @@ Enemy::Enemy(float nx, float ny) {
     setPosition({ nx, ny });
     setMovement({ 100, 100 });
     shotCount = 0;
-    burst = 2;
+    burst = 3;
     delay = 0.5f;
-    shots = { 50.0f, 50.0f };
-    movTypes = { 5, 5 };
+    shotSpeeds = { 50.0f, 50.0f, 50.0f };
+    movTypes = { 5, 0, 1};
 }
 
 Enemy::~Enemy() {}
@@ -57,14 +57,14 @@ std::vector<std::shared_ptr<Projectile>> Enemy::update() {
 std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
     std::vector<std::shared_ptr<Projectile>> shots_out;
     for (int i = 0; i < burst; i++) {
-        if (shotCount == shots.size()) {
+        if (shotCount == shotSpeeds.size()) {
             shotCount = 0;
         }
-        float shot = shots.at(shotCount);
+        float shotSpeed = shotSpeeds.at(shotCount);
         shots_out.push_back(std::make_shared<Projectile>(
             position.x,
             position.y,
-            shot,
+            shotSpeed,
             movTypes.at(shotCount),
             shared_from_this() // pass this enemy
         ));

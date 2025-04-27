@@ -14,7 +14,7 @@ private:
     int burst;
     float delay;
     int shotCount;
-    std::vector<float> shots;
+    std::vector<float> shotSpeeds;
     std::vector<int> movTypes;
     sf::Clock shootClock;
 public:
