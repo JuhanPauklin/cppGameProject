@@ -22,8 +22,8 @@ int main()
 	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * 0.75f };
     sf::RenderWindow window(sf::VideoMode(window_size), "SFML works!", sf::Style::Titlebar | sf::Style::Close);
 
-    Player player;   
-    player.setPosition(player_start_pos);
+    auto player = std::make_shared<Player>();
+    (*player).setPosition(player_start_pos);
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
 
@@ -52,7 +52,10 @@ int main()
                     window.close();
                 }
                 if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
-
+                    std::vector<std::shared_ptr<Projectile>> newProjectiles = (*player).shoot();
+                    for (auto& p : newProjectiles) {
+                        allProjectiles.push_back(p);
+                    }
                 }
             }
         }
@@ -73,7 +76,7 @@ int main()
         }
 
         // then apply movement
-        player.move(movement * deltaTime);
+        (*player).move(movement * deltaTime);
         int i = 0;
         for (int i = enemies.size() - 1; i >= 0; --i) {
             std::shared_ptr<Enemy> enemy = enemies.at(i);
@@ -88,7 +91,7 @@ int main()
             if (*it) {
                 sf::Vector2f vec = (*it)->getPosition();
                 (*it)->move(deltaTime);
-                (*it)->inHitbox(player, *it);
+                (*it)->inHitbox((*player), *it);
 
                 if (vec.x > window_sizef.x + 10 || vec.y > window_sizef.y + 10 ||
                     vec.x < -10 || vec.y < -10 || !*it)
@@ -134,12 +137,11 @@ int main()
 
 
 		// Update health text
-		healthText.setString("hp " + std::to_string(player.getHealth()));
+		healthText.setString("hp " + std::to_string((*player).getHealth()));
         //draw shapes
         window.clear(sf::Color::Black);
         window.draw(healthText);
-		std::cout << "Player position: " << player.getPosition().x << ", " << player.getPosition().y << std::endl;
-        window.draw(player);
+        window.draw((*player));
         for (auto& p : allProjectiles) {
             window.draw(*p);
         }

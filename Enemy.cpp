@@ -20,10 +20,10 @@ Enemy::Enemy(float nx, float ny) {
     setPosition({ nx, ny });
     setMovement({ 100, 0 });
     shotCount = 0;
-    burst = 3;
+    burst = 1;
     delay = 0.5f;
-    shotSpeeds = { 50.0f, 50.0f, 50.0f };
-    movTypes = { 5, 0, 1};
+    shotSpeeds = { 50.0f};
+    movTypes = { 5 };
 }
 
 Enemy::~Enemy() {}

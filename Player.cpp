@@ -21,12 +21,12 @@ void Player::move(sf::Vector2f deltaMovement) {
 
 std::vector<std::shared_ptr<Projectile>> Player::shoot() {
     std::vector<std::shared_ptr<Projectile>> shots_out;
+    sf::Vector2f movement = { 0.0f, -200.0f };
 
     shots_out.push_back(std::make_shared<Projectile>(
         position.x,
         position.y,
-        50.0f,
-        1,
+        movement,
         shared_from_this() // pass the player obj
     ));
 

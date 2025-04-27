@@ -24,6 +24,7 @@ private:
 
 public:
     Projectile(float nx, float ny, float nspeed, int nmovType, std::shared_ptr<GameObject> enemy);
+    Projectile(float nx, float ny, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy);
     ~Projectile();
 
     // Getter and setter
