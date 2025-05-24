@@ -61,7 +61,9 @@ int main()
 	// Enemies will be chosen last from the queue, so the first enemy in the queue will be the last one to be spawned.
 	int killcount = 0;
 	std::vector<std::shared_ptr<Enemy>> enemiesQueue{
-        std::make_shared<Enemy>(50.0f, 50.0f, 20, 2, std::vector<int>{-1, 0}, std::string("./sprites/tontKolmik32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -2, 5}, std::string("./sprites/tontKombits32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -2, 5}, std::string("./sprites/tontKolmik32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -1, 0}, std::string("./sprites/tontKolmik32.png")),
 		//std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
         //std::make_shared<Enemy>(1230.0f, 100.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
         //std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
@@ -200,7 +202,7 @@ int main()
         for (auto it = enemies.begin(); it != enemies.end();) {
             if (*it) {
                 (*it)->move(deltaTime);
-                std::vector<std::shared_ptr<Projectile>> newProjectiles = (*it)->update();
+                std::vector<std::shared_ptr<Projectile>> newProjectiles = (*it)->update(*player);
                 for (auto& p : newProjectiles) {
                     allProjectiles.push_back(p);
                 }

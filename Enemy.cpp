@@ -91,27 +91,35 @@ void Enemy::move(float deltaTime) {
     setPosition(getPosition() + getMovement() * deltaTime);
 }
 
-std::vector<std::shared_ptr<Projectile>> Enemy::update() {
+std::vector<std::shared_ptr<Projectile>> Enemy::update(Player& player) {
     move(0.016f);  // Call move with deltaTime
     std::vector<std::shared_ptr<Projectile>> output;
 
     if (shootClock.getElapsedTime().asSeconds() >= delay) {
-        output = shoot();
+        output = shoot(player);
         shootClock.restart();
     }
 
     return output;
 }
 
-std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
+std::vector<std::shared_ptr<Projectile>> Enemy::shoot(Player& player) {
     std::vector<std::shared_ptr<Projectile>> shots_out;
     for (int i = 0; i < burst; i++) {
         if (shotCount == shotSpeeds.size()) {
             shotCount = 0;
         }
-        float shotSpeed = shotSpeeds.at(shotCount);
-
-        if (movTypes.at(shotCount) == -1) { // Spread projectile (Creating two linear projectiles)
+        
+        if (movTypes.at(shotCount) == -2) { // Seeking projectile. Shoots at player's position.
+			sf::Vector2f playerPos = player.getPosition();
+			sf::Vector2f enemyPos = getPosition();
+            shots_out.push_back(std::make_shared<Projectile>(
+                position.x,
+                position.y,
+                sf::Vector2f{ playerPos.x - enemyPos.x, playerPos.y - enemyPos.y},
+                shared_from_this()
+            ));
+        } else if (movTypes.at(shotCount) == -1) { // Spread projectile (Creating two linear projectiles)
             shots_out.push_back(std::make_shared<Projectile>(
                 position.x,
                 position.y,
@@ -133,6 +141,7 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
 			));
         }
         else {
+            float shotSpeed = shotSpeeds.at(shotCount);
 			shots_out.push_back(std::make_shared<Projectile>( // Any projectile
                 position.x,
                 position.y,

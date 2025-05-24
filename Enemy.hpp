@@ -1,5 +1,6 @@
 #pragma once  
-#include "Game_Object.hpp"  
+#include "Game_Object.hpp"
+#include "Player.hpp"
 #include <SFML/System.hpp>  
 #include <memory>  
 #include <vector>  
@@ -28,8 +29,8 @@ public:
    sf::Vector2f getMovement();  
    void setMovement(sf::Vector2f nmovement);  
    void setPosition(sf::Vector2f nposition);  
-   std::vector<std::shared_ptr<Projectile>> update();  
-   std::vector<std::shared_ptr<Projectile>> shoot();  
+   std::vector<std::shared_ptr<Projectile>> update(Player& player);
+   std::vector<std::shared_ptr<Projectile>> shoot(Player& player);
    void move(float deltaTime);  
    void turnAround();
    void setTurnRed(int nRed);
