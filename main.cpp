@@ -61,9 +61,10 @@ int main()
 	// Enemies will be chosen last from the queue, so the first enemy in the queue will be the last one to be spawned.
 	int killcount = 0;
 	std::vector<std::shared_ptr<Enemy>> enemiesQueue{
-		std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
-        std::make_shared<Enemy>(670.0f, 100.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
-        std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 2, std::vector<int>{-1, 0}, std::string("./sprites/tontKolmik32.png")),
+		//std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        //std::make_shared<Enemy>(1230.0f, 100.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        //std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
 	};
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
@@ -231,7 +232,8 @@ int main()
 			auto newEnemy = enemiesQueue.back();
 			enemiesQueue.pop_back();
 			enemies.push_back(newEnemy);
-            if (killcount == 1) {
+
+            if (killcount == 1 && enemiesQueue.size() > 0) { // Second wave (after killing first enemy) has two enemies
                 auto newEnemy = enemiesQueue.back();
                 enemiesQueue.pop_back();
                 enemies.push_back(newEnemy);

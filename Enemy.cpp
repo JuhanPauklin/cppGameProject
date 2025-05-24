@@ -111,24 +111,20 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
         }
         float shotSpeed = shotSpeeds.at(shotCount);
 
-		/* bugged - craetes a third umoving projectile
         if (movTypes.at(shotCount) == -1) { // Spread projectile (Creating two linear projectiles)
             shots_out.push_back(std::make_shared<Projectile>(
                 position.x,
                 position.y,
-                sf::Vector2f{ 8.0f, 200.0f },
+                sf::Vector2f{ 20.0f, 200.0f },
                 shared_from_this()
             ));
             shots_out.push_back(std::make_shared<Projectile>(
                 position.x,
                 position.y,
-                sf::Vector2f{ -8.0f, 200.0f },
+                sf::Vector2f{ -20.0f, 200.0f },
                 shared_from_this()
             ));
-        }
-        */
-
-        if (movTypes.at(shotCount) == 0) {
+        } else if (movTypes.at(shotCount) == 0) {
 			shots_out.push_back(std::make_shared<Projectile>( // Linear projectile
 				position.x,
 				position.y,
