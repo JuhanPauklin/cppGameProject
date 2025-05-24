@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>  
 #include <memory>  
 #include <vector>  
+#include <string>
 
 class Projectile; // forward declaration  
 
@@ -16,9 +17,11 @@ private:
    std::vector<float> shotSpeeds;  
    std::vector<int> movTypes;  
    sf::Clock shootClock;  
+   sf::Texture texture;
 public:  
    Enemy();  
    Enemy(float nx, float ny);  
+   Enemy(float nx, float ny, int nhealth, std::vector<int> nmovTypes, std::string textureFileName);
    ~Enemy();  
    
    sf::Vector2f getMovement();  

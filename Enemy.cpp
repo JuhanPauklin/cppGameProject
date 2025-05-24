@@ -1,7 +1,12 @@
 #include "Enemy.hpp"
 #include "Projectile.hpp"
 
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
+#include <iostream>
+
+// Default enemy constructor
 Enemy::Enemy() {
     length = 10;
     width = 10;
@@ -14,8 +19,12 @@ Enemy::Enemy() {
     delay = 0.5f;
     shotSpeeds = { 50.0f, 50.0f };
     movTypes = { 5, 0, 1, 2, 3, 4 };
+    if (!texture.loadFromFile("./tont24.png")) {
+        std::cerr << "Error loading texture" << std::endl;
+    }
 }
 
+// Default enemy with coordinates
 Enemy::Enemy(float nx, float ny) {
     length = 10;
     width = 10;
@@ -28,6 +37,34 @@ Enemy::Enemy(float nx, float ny) {
     delay = 0.5f;
     shotSpeeds = { 200.0f, 200.0f, 200.0f, 200.0f, 50.0f};
     movTypes = { 1, 2, 3, 4, 5 };
+    if (!texture.loadFromFile("./tont24.png")) {
+        std::cerr << "Error loading texture" << std::endl;
+    }
+}
+
+// Custom enemy
+Enemy::Enemy(float nx, float ny, int nhealth, std::vector<int> nmovTypes, std::string textureFileName) {
+    length = 10;
+    width = 10;
+    setPosition({ nx, ny });
+    setMovement({ 100, 0 });
+    setRadius(5);
+    setHealth(nhealth);
+    shotCount = 0;
+    burst = 6;
+    delay = 0.5f;
+	movTypes = nmovTypes; // How enemy's projectiles move
+	for (int i = 0; i < movTypes.size(); i++) {
+		if (movTypes[i] == 5) { // Spiral
+			shotSpeeds[i] = 50.0f; // Default spiral speed
+        }
+        else {
+			shotSpeeds[i] = 200.0f; // Default linear speed
+        }
+	}
+    if (!texture.loadFromFile(textureFileName)) {
+        std::cerr << "Error loading texture" << std::endl;
+    }
 }
 
 Enemy::~Enemy() {}
@@ -80,12 +117,9 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
 void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     if (!isShown) return;
 
-    sf::CircleShape circle;
-    circle.setRadius(length / 2.0f);
-    circle.setPosition(position);
-    circle.setFillColor(sf::Color::White);
-
-    target.draw(circle, states);
+    sf::Sprite sprite(texture);
+    sprite.setPosition(position);
+    target.draw(sprite, states);
 }
 
 void Enemy::turnAround() {
