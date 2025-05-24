@@ -12,18 +12,49 @@
 
 int main()
 {
-    // Text
-    sf::Font font("./Blox2.ttf");
-    sf::Text healthText(font, "hp 100", 40);
+
+	int gamestate = 0; // 0 = starting screen, 1 = game, 2 = game over
 
     // WINDOW
     sf::Vector2u window_size{ 1280,720 };
     sf::Vector2f window_sizef{ 1280.0f,720.0f };
-	sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
+
     sf::RenderWindow window(sf::VideoMode(window_size), "Tohoo Tonti", sf::Style::Titlebar | sf::Style::Close);
+
+    // Text
+    sf::Font font("./Blox2.ttf");
+
+    sf::Text startText(font, "press Enter key to start", 50);
+    startText.setPosition(sf::Vector2f(window_sizef.x * 0.25f, window_sizef.y / 2));
+
+    // Start screen loop
+    while (window.isOpen() && gamestate == 0){
+        while (const std::optional event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+            {
+                window.close();
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
+                    window.close();
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter))
+                    gamestate = 1;
+            }
+        }
+        window.clear(sf::Color::Black);
+        window.draw(startText);
+        window.display();
+    }
+
+    sf::Text healthText(font, "hp 100", 40);
+    sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
 
     auto player = std::make_shared<Player>();
     (*player).setPosition(player_start_pos);
+
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
     std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
@@ -37,7 +68,7 @@ int main()
     int frameCount = 0;
     sf::Clock clock;
     // Game Loop
-    while (window.isOpen())
+    while (window.isOpen() && gamestate == 1)
     {
         sf::Time dt = clock.restart();
         float deltaTime = dt.asSeconds();
