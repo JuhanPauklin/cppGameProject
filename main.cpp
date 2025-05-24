@@ -49,11 +49,13 @@ int main()
         window.display();
     }
 
-    sf::Text healthText(font, "hp 100", 40);
+
     sf::Vector2f player_start_pos{ window_sizef.x / 2, window_sizef.y * static_cast<float>(0.75) };
 
     auto player = std::make_shared<Player>();
     (*player).setPosition(player_start_pos);
+
+    sf::Text healthText(font, "hp " + std::to_string((*player).getHealth()), 40);
 
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
