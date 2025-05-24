@@ -61,13 +61,17 @@ int main()
 	// Enemies will be chosen last from the queue, so the first enemy in the queue will be the last one to be spawned.
 	int killcount = 0;
 	std::vector<std::shared_ptr<Enemy>> enemiesQueue{
-        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -2, 5}, std::string("./sprites/tontKombits32.png")),
-        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -2, 5}, std::string("./sprites/tontKolmik32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 4, std::vector<int>{-1, -2, 5, 5}, std::string("./sprites/tontKolju32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, 5, 5}, std::string("./sprites/tontKombits32.png")),
+        std::make_shared<Enemy>(50.0f, 100.0f, 20, 3, std::vector<int>{-2, -2, 5}, std::string("./sprites/tontKolmik32.png")),
         std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -1, 0}, std::string("./sprites/tontKolmik32.png")),
-		//std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
-        //std::make_shared<Enemy>(1230.0f, 100.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
-        //std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+		std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        std::make_shared<Enemy>(1230.0f, 100.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
 	};
+	int zigzagEnemy = enemiesQueue.size() - 2; // Second to last enemy in the queue is a zigzag enemy
+    int boss = enemiesQueue.size() - 1;
+
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
     std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
@@ -216,6 +220,21 @@ int main()
                     (*it)->turnAround();
                 }
 
+				// This is the zigzag enemy, which will move up and down
+                if (killcount == zigzagEnemy && pos.y > window_sizef.y * 0.3f) {
+					(*it)->setMovement(sf::Vector2f(movement.x, -50.0f)); 
+				} else if (killcount == zigzagEnemy && pos.y < window_sizef.y * 0.1f) {
+					(*it)->setMovement(sf::Vector2f(movement.x, 50.0f)); 
+                }
+				// The boss (final enemy) also zigzags
+                if (killcount == boss && pos.y > window_sizef.y * 0.6f) {
+                    (*it)->setMovement(sf::Vector2f(movement.x, -50.0f));
+                }
+                else if (killcount == boss && pos.y < window_sizef.y * 0.2f) {
+                    (*it)->setMovement(sf::Vector2f(movement.x, 50.0f));
+                }
+
+
                 if (isOutOfBounds(pos) || (*it)->getHealth() <= 0) {
                     it = enemies.erase(it);
 					killcount++;
@@ -262,8 +281,6 @@ int main()
         // --- FPS Counter ---
         frameCount++;
         if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
-            //auto enemy = std::make_shared<Enemy>(50, 50);
-            //enemies.push_back(enemy);
             std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             fpsClock.restart();
