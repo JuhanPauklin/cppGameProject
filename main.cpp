@@ -57,12 +57,17 @@ int main()
 
     sf::Text healthText(font, "hp " + std::to_string((*player).getHealth()), 40);
 
+	// Create enemies. Enemies will be added to a queue, and then spawned into the game when needed.
+	// Enemies will be chosen last from the queue, so the first enemy in the queue will be the last one to be spawned.
+	int killcount = 0;
+	std::vector<std::shared_ptr<Enemy>> enemiesQueue{
+		std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        std::make_shared<Enemy>(670.0f, 100.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tont32.png")),
+	};
     std::vector<std::shared_ptr<Enemy>> enemies;
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
     std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
-
-    auto enemy2 = std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tontKombits32.png"));
-    enemies.push_back(enemy2);
 
     sf::Clock fpsClock;
     sf::Clock playerShotClock;
@@ -210,6 +215,7 @@ int main()
 
                 if (isOutOfBounds(pos) || (*it)->getHealth() <= 0) {
                     it = enemies.erase(it);
+					killcount++;
                 }
                 else {
                     ++it;
@@ -220,6 +226,17 @@ int main()
             }
         }
 
+		if (enemies.empty() && enemiesQueue.size() > 0) {
+			// Add new enemy from queue
+			auto newEnemy = enemiesQueue.back();
+			enemiesQueue.pop_back();
+			enemies.push_back(newEnemy);
+            if (killcount == 1) {
+                auto newEnemy = enemiesQueue.back();
+                enemiesQueue.pop_back();
+                enemies.push_back(newEnemy);
+            }
+		}
 
 		// Update health text
 		healthText.setString("hp " + std::to_string((*player).getHealth()));
