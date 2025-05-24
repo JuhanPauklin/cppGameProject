@@ -21,7 +21,7 @@ private:
 public:  
    Enemy();  
    Enemy(float nx, float ny);  
-   Enemy(float nx, float ny, int nhealth, std::vector<int> nmovTypes, std::string textureFileName);
+   Enemy(float nx, float ny, int nhealth, int burst, std::vector<int> nmovTypes, std::string textureFileName);
    ~Enemy();  
    
    sf::Vector2f getMovement();  

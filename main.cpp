@@ -28,8 +28,8 @@ int main()
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
     std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
 
-    auto enemy = std::make_shared<Enemy>(50, 50);
-    enemies.push_back(enemy);
+    auto enemy2 = std::make_shared<Enemy>(50.0f, 50.0f, 5, 3, std::vector<int>{0}, std::string("./sprites/tont32.png"));
+    enemies.push_back(enemy2);
 
     sf::Clock fpsClock;
     sf::Clock playerShotClock;
@@ -202,8 +202,8 @@ int main()
         // --- FPS Counter ---
         frameCount++;
         if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
-            auto enemy = std::make_shared<Enemy>(50, 50);
-            enemies.push_back(enemy);
+            //auto enemy = std::make_shared<Enemy>(50, 50);
+            //enemies.push_back(enemy);
             std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             fpsClock.restart();

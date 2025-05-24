@@ -43,7 +43,7 @@ Enemy::Enemy(float nx, float ny) {
 }
 
 // Custom enemy
-Enemy::Enemy(float nx, float ny, int nhealth, std::vector<int> nmovTypes, std::string textureFileName) {
+Enemy::Enemy(float nx, float ny, int nhealth, int nburst, std::vector<int> nmovTypes, std::string textureFileName) {
     length = 10;
     width = 10;
     setPosition({ nx, ny });
@@ -54,6 +54,7 @@ Enemy::Enemy(float nx, float ny, int nhealth, std::vector<int> nmovTypes, std::s
     burst = 6;
     delay = 0.5f;
 	movTypes = nmovTypes; // How enemy's projectiles move
+    shotSpeeds.resize(movTypes.size());
 	for (int i = 0; i < movTypes.size(); i++) {
 		if (movTypes[i] == 5) { // Spiral
 			shotSpeeds[i] = 50.0f; // Default spiral speed
@@ -102,13 +103,26 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot() {
             shotCount = 0;
         }
         float shotSpeed = shotSpeeds.at(shotCount);
-        shots_out.push_back(std::make_shared<Projectile>(
-            position.x,
-            position.y,
-            shotSpeed,
-            movTypes.at(shotCount),
-            shared_from_this()
-        ));
+
+        if (movTypes.at(shotCount) == 0) {
+			shots_out.push_back(std::make_shared<Projectile>(
+				position.x,
+				position.y,
+                sf::Vector2f{0.0f, 200.0f},
+				shared_from_this()
+			));
+        }
+        else {
+            shots_out.push_back(std::make_shared<Projectile>(
+                position.x,
+                position.y,
+                shotSpeed,
+                movTypes.at(shotCount),
+                shared_from_this()
+            ));
+        }
+
+
         shotCount++;
     }
     return shots_out;
