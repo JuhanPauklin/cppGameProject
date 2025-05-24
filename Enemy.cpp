@@ -12,7 +12,7 @@ Enemy::Enemy() {
     width = 10;
     setPosition({ 10, 10});
     setMovement({ 100, 100 });
-    setRadius(5);
+    setRadius(12);
     setHealth(1);
     shotCount = 0;
     burst = 3;
@@ -30,7 +30,7 @@ Enemy::Enemy(float nx, float ny) {
     width = 10;
     setPosition({ nx, ny });
     setMovement({ 100, 0 });
-    setRadius(5);
+    setRadius(12);
     setHealth(1);
     shotCount = 0;
     burst = 6;
@@ -48,10 +48,10 @@ Enemy::Enemy(float nx, float ny, int nhealth, int nburst, std::vector<int> nmovT
     width = 10;
     setPosition({ nx, ny });
     setMovement({ 100, 0 });
-    setRadius(5);
+    setRadius(12);
     setHealth(nhealth);
     shotCount = 0;
-    burst = 6;
+    burst = nburst;
     delay = 0.5f;
 	movTypes = nmovTypes; // How enemy's projectiles move
     shotSpeeds.resize(movTypes.size());

@@ -28,7 +28,7 @@ int main()
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
     std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
 
-    auto enemy2 = std::make_shared<Enemy>(50.0f, 50.0f, 5, 3, std::vector<int>{0}, std::string("./sprites/tont32.png"));
+    auto enemy2 = std::make_shared<Enemy>(0.0f, 0.0f, 5, 1, std::vector<int>{0}, std::string("./sprites/tont32.png"));
     enemies.push_back(enemy2);
 
     sf::Clock fpsClock;

@@ -145,9 +145,15 @@ void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 bool Projectile::inHitbox(GameObject& target) {
     sf::Vector2f targetPos = target.getPosition();
-    float targetRadius = target.getRadius() * 2;
-    if (position.x > targetPos.x && position.x < targetPos.x + targetRadius &&
-        position.y > targetPos.y && position.y < targetPos.y + targetRadius) {
+	float targetDiameter = target.getRadius() * 2;
+
+    if (dynamic_cast<Enemy*>(&target) != nullptr) { // Tont images (and thus hitboxes) are smaller than the entire image
+		targetPos.x += 4; 
+		targetPos.y += 4;
+    }
+    
+    if (position.x > targetPos.x && position.x < targetPos.x + targetDiameter &&
+        position.y > targetPos.y && position.y < targetPos.y + targetDiameter) {
         return true;
     }
     return false;
