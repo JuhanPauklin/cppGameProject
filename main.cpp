@@ -13,7 +13,7 @@
 int main()
 {
 
-	int gamestate = 0; // 0 = starting screen, 1 = game, 2 = game over
+	int gamestate = 3; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
 
     // WINDOW
     sf::Vector2u window_size{ 1280,720 };
@@ -130,6 +130,19 @@ int main()
         }
         // then apply movement
         (*player).move(movement * deltaTime);
+
+        // Keep player within window bounds
+        sf::Vector2f playerPos = (*player).getPosition();
+        if (playerPos.x < 0) playerPos.x = 0;
+        if (playerPos.y < 0) playerPos.y = 0;
+        if (playerPos.x > window_sizef.x - (*player).getRadius() * 2) {
+            playerPos.x = window_sizef.x - (*player).getRadius() * 2;
+        }
+        if (playerPos.y > window_sizef.y - (*player).getRadius() * 2) {
+            playerPos.y = window_sizef.y - (*player).getRadius() * 2;
+        }
+        (*player).setPosition(playerPos);
+
         int i = 0;
         // move all projectiles
         auto isOutOfBounds = [&](const sf::Vector2f& pos) -> bool {
@@ -260,6 +273,10 @@ int main()
                 enemies.push_back(newEnemy);
             }
 		}
+        // Check if all enemies are defeated
+        if (enemies.empty() && enemiesQueue.empty()) {
+            gamestate = 3; // Win state
+        }
 
 		// Update health text
 		healthText.setString("hp " + std::to_string((*player).getHealth()));
@@ -307,6 +324,36 @@ int main()
         }
         window.clear(sf::Color::Black);
         window.draw(GameOverText);
+        window.display();
+    }
+
+    sf::Text VictoryText(font, "Tondid on alistatud!", 50);
+    VictoryText.setPosition(sf::Vector2f(window_sizef.x * 0.3f, window_sizef.y / 2));
+
+    sf::Texture victoryTexture;
+    if (!victoryTexture.loadFromFile("./sprites/fumoPlush.png")) {
+        std::cerr << "Error loading texture fumoPlush" << std::endl;
+    }
+    sf::Sprite victorySprite(victoryTexture);
+    victorySprite.setPosition(sf::Vector2f((window_sizef.x - 163.0f )/ 2.0f , 50));
+
+    while (window.isOpen() && gamestate == 3) {
+        while (const std::optional event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+            {
+                window.close();
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
+                    window.close();
+                }
+            }
+        }
+        window.clear(sf::Color::Black);
+        window.draw(VictoryText);
+        window.draw(victorySprite);
         window.display();
     }
 
