@@ -50,6 +50,8 @@ Projectile::Projectile(float nx, float ny, sf::Vector2f nmovement, std::shared_p
     spiralSpeed = 50.0f * 3.6f; // degrees per second
     radiusSpeed = 50.0f;  // units per second
 }
+
+// Projectile with speed modifier constructor (used for player for example)
 Projectile::Projectile(float nx, float ny,float nspeedMod, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy) {
     setHealth(1);
     length = 10;
