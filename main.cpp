@@ -28,7 +28,7 @@ int main()
     std::vector<std::shared_ptr<Projectile>> allProjectiles;
     std::vector<std::shared_ptr<Projectile>> allPlayerProjectiles;
 
-    auto enemy2 = std::make_shared<Enemy>(0.0f, 0.0f, 5, 1, std::vector<int>{0}, std::string("./sprites/tont32.png"));
+    auto enemy2 = std::make_shared<Enemy>(50.0f, 50.0f, 20, 1, std::vector<int>{0}, std::string("./sprites/tontKombits32.png"));
     enemies.push_back(enemy2);
 
     sf::Clock fpsClock;
@@ -126,7 +126,9 @@ int main()
                 // check collision with all enemies
                 for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
                     if (*enemyIt && (*it)->inHitbox(**enemyIt)) {
-                        (*enemyIt)->setHealth((*enemyIt)->getHealth()-1); // optional: enemy takes damage
+                        (*enemyIt)->setHealth((*enemyIt)->getHealth()-1);
+						(*enemyIt)->setTurnRed(10); // Enemy will become red for n frames
+
                         hit = true;
                         break;
                     }

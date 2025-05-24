@@ -19,9 +19,10 @@ Enemy::Enemy() {
     delay = 0.5f;
     shotSpeeds = { 50.0f, 50.0f };
     movTypes = { 5, 0, 1, 2, 3, 4 };
-    if (!texture.loadFromFile("./tont24.png")) {
+    if (!texture.loadFromFile("./tont32.png")) {
         std::cerr << "Error loading texture" << std::endl;
     }
+    turnRed = 0;
 }
 
 // Default enemy with coordinates
@@ -37,9 +38,10 @@ Enemy::Enemy(float nx, float ny) {
     delay = 0.5f;
     shotSpeeds = { 200.0f, 200.0f, 200.0f, 200.0f, 50.0f};
     movTypes = { 1, 2, 3, 4, 5 };
-    if (!texture.loadFromFile("./tont24.png")) {
+    if (!texture.loadFromFile("./tont32.png")) {
         std::cerr << "Error loading texture" << std::endl;
     }
+    turnRed = 0;
 }
 
 // Custom enemy
@@ -66,9 +68,14 @@ Enemy::Enemy(float nx, float ny, int nhealth, int nburst, std::vector<int> nmovT
     if (!texture.loadFromFile(textureFileName)) {
         std::cerr << "Error loading texture" << std::endl;
     }
+    turnRed = 0;
 }
 
 Enemy::~Enemy() {}
+
+void Enemy::setTurnRed(int nRed) {
+	turnRed = nRed;
+}
 
 sf::Vector2f Enemy::getMovement() { return movement; }
 
@@ -133,6 +140,15 @@ void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     sf::Sprite sprite(texture);
     sprite.setPosition(position);
+
+	if (turnRed > 0) {
+		sprite.setColor(sf::Color::Red);
+        turnRed--; // Reset after drawing
+	}
+	else {
+		sprite.setColor(sf::Color::White);
+	}
+
     target.draw(sprite, states);
 }
 

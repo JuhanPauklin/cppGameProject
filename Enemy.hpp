@@ -18,6 +18,7 @@ private:
    std::vector<int> movTypes;  
    sf::Clock shootClock;  
    sf::Texture texture;
+   mutable int turnRed; // Marked as mutable to allow modification in const methods (Draw)
 public:  
    Enemy();  
    Enemy(float nx, float ny);  
@@ -30,7 +31,8 @@ public:
    std::vector<std::shared_ptr<Projectile>> update();  
    std::vector<std::shared_ptr<Projectile>> shoot();  
    void move(float deltaTime);  
-   void turnAround();  
+   void turnAround();
+   void setTurnRed(int nRed);
 
 protected:  
    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;  
