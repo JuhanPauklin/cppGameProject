@@ -57,7 +57,7 @@ int main()
         }
 
         sf::Vector2f movement(0.f, 0.f);
-        float speed = 150.0f;
+        float speed = 200.0f;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
             speed=50.0f;
         }

@@ -8,7 +8,7 @@
 
 Player::Player() {
     setHealth(100);
-	radius = 16.0f;
+	radius = 11.0f;
     length = 32;
     width = 32;
     if (!texture.loadFromFile("./sprites/player.png")) {
@@ -28,22 +28,22 @@ std::vector<std::shared_ptr<Projectile>> Player::shoot() {
     std::vector<std::shared_ptr<Projectile>> shots_out;
     std::vector<sf::Vector2f> movement = {{ 0.0f, -100.0f },{-6.0f, -100.0f},{6.0f,-100.0f}};
     shots_out.push_back(std::make_shared<Projectile>(
-        position.x,
-        position.y,
+        position.x + getRadius(),
+        position.y + getRadius(),
         5.0f,
         movement.at(0),
         shared_from_this() // pass the player obj
     ));
     shots_out.push_back(std::make_shared<Projectile>(
-        position.x,
-        position.y,
+        position.x + getRadius(),
+        position.y + getRadius(),
         5.0f,
         movement.at(1),
         shared_from_this() // pass the player obj
     ));
     shots_out.push_back(std::make_shared<Projectile>(
-        position.x,
-        position.y,
+        position.x + getRadius(),
+        position.y + getRadius(),
         5.0f,
         movement.at(2),
         shared_from_this() // pass the player obj
