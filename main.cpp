@@ -67,6 +67,7 @@ int main()
     window.setFramerateLimit(100);
     int frameCount = 0;
     sf::Clock clock;
+
     // Game Loop
     while (window.isOpen() && gamestate == 1)
     {
@@ -129,8 +130,11 @@ int main()
 
                 // Check collision with player
                 if ((*it)->inHitbox(*player)) {
-                    player->setHealth(player->getHealth()-1); // if you have getDamage()
+                    player->setHealth(player->getHealth()-1);
                     it = allProjectiles.erase(it);
+					if (player->getHealth() <= 0) {
+						gamestate = 2; // Game over state
+					}
                     continue;
                 }
 
@@ -241,6 +245,29 @@ int main()
             frameCount = 0;
             fpsClock.restart();
         }
+    }
+
+    sf::Text GameOverText(font, "Game Over", 50);
+    GameOverText.setPosition(sf::Vector2f(window_sizef.x * 0.4f, window_sizef.y / 2));
+
+    // Game over screen
+    while (window.isOpen() && gamestate == 2) {
+        while (const std::optional event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+            {
+                window.close();
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
+                    window.close();
+                }
+            }
+        }
+        window.clear(sf::Color::Black);
+        window.draw(GameOverText);
+        window.display();
     }
 
 

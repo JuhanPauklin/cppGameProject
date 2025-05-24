@@ -7,7 +7,7 @@
 #include <iostream>
 
 Player::Player() {
-    setHealth(100);
+    setHealth(1);
 	radius = 11.0f;
     length = 32;
     width = 32;
