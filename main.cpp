@@ -13,7 +13,7 @@
 int main()
 {
 
-	int gamestate = 3; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
+	int gamestate = 0; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
 
     // WINDOW
     sf::Vector2u window_size{ 1280,720 };
@@ -295,7 +295,7 @@ int main()
         }
         window.display();
 
-        // --- FPS Counter ---
+        // FPS Counter
         frameCount++;
         if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
             std::cout << "FPS: " << frameCount << std::endl;
@@ -327,6 +327,7 @@ int main()
         window.display();
     }
 
+	// Victory screen
     sf::Text VictoryText(font, "Tondid on alistatud!", 50);
     VictoryText.setPosition(sf::Vector2f(window_sizef.x * 0.3f, window_sizef.y / 2));
 
