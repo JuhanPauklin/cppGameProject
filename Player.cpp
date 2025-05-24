@@ -1,11 +1,19 @@
 #include "Projectile.hpp"
 #include "Player.hpp"
 
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+
+#include <iostream>
+
 Player::Player() {
     setHealth(100);
-	radius = 5.0f;
-    length = 10;
-    width = 10;
+	radius = 16.0f;
+    length = 32;
+    width = 32;
+    if (!texture.loadFromFile("./sprites/player.png")) {
+        std::cerr << "Error loading texture" << std::endl;
+    }
 }
 
 Player::~Player() {}
@@ -47,10 +55,13 @@ std::vector<std::shared_ptr<Projectile>> Player::shoot() {
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     //if (!isShown) return;
 
+    sf::Sprite sprite(texture);
+    sprite.setPosition(position);
+
     sf::CircleShape circle;
     circle.setRadius(5.0f);
     circle.setPosition(position);
     circle.setFillColor(sf::Color::Green);
 
-    target.draw(circle, states);
+    target.draw(sprite, states);
 }
