@@ -158,7 +158,7 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot(Player& player) {
 }
 
 void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    if (!isShown) return;
+    //if (!isShown) return;
 
     sf::Sprite sprite(texture);
     sprite.setPosition(position);
