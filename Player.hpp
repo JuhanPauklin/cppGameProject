@@ -10,6 +10,7 @@ class Player : public GameObject, public std::enable_shared_from_this<Player> {
 private:
 	int length;
 	int width;
+	sf::Texture texture;
 public:
 	Player();
 	~Player();

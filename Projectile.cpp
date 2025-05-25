@@ -50,6 +50,8 @@ Projectile::Projectile(float nx, float ny, sf::Vector2f nmovement, std::shared_p
     spiralSpeed = 50.0f * 3.6f; // degrees per second
     radiusSpeed = 50.0f;  // units per second
 }
+
+// Projectile with speed modifier constructor (used for player for example)
 Projectile::Projectile(float nx, float ny,float nspeedMod, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy) {
     setHealth(1);
     length = 10;
@@ -145,9 +147,15 @@ void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 bool Projectile::inHitbox(GameObject& target) {
     sf::Vector2f targetPos = target.getPosition();
-    float targetRadius = target.getRadius() * 2;
-    if (position.x > targetPos.x && position.x < targetPos.x + targetRadius &&
-        position.y > targetPos.y && position.y < targetPos.y + targetRadius) {
+	float targetDiameter = target.getRadius() * 2;
+
+    if (dynamic_cast<Enemy*>(&target) != nullptr) { // Tont images (and thus hitboxes) are smaller than the entire image
+		targetPos.x += 4; 
+		targetPos.y += 4;
+    }
+    
+    if (position.x > targetPos.x && position.x < targetPos.x + targetDiameter &&
+        position.y > targetPos.y && position.y < targetPos.y + targetDiameter) {
         return true;
     }
     return false;
