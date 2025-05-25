@@ -13,7 +13,7 @@
 int main()
 {
 
-	int gamestate = 3; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
+	int gamestate = 0; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
 
     // WINDOW
     sf::Vector2u window_size{ 1280,720 };
