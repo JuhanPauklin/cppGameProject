@@ -13,7 +13,7 @@
 int main()
 {
 
-	int gamestate = 0; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
+	int gamestate = 3; // 0 = starting screen, 1 = game, 2 = game over, 3 = win screen
 
     // WINDOW
     sf::Vector2u window_size{ 1280,720 };
@@ -22,10 +22,16 @@ int main()
     sf::RenderWindow window(sf::VideoMode(window_size), "Tohoo Tonti", sf::Style::Titlebar | sf::Style::Close);
 
     // Text
-    sf::Font font("./Blox2.ttf");
+    sf::Font font("./FontKarmaticArcade.ttf");
 
-    sf::Text startText(font, "press Enter key to start", 50);
-    startText.setPosition(sf::Vector2f(window_sizef.x * 0.25f, window_sizef.y / 2));
+    sf::Text startTextTitle(font, "Tohoo Tonti!", 60);
+    startTextTitle.setPosition(sf::Vector2f(window_sizef.x * 0.30f, window_sizef.y * 0.25f));
+
+    sf::Text startTextPress(font, "press Enter key to start", 50);
+    startTextPress.setPosition(sf::Vector2f(window_sizef.x * 0.14f, window_sizef.y * 0.5f));
+
+    sf::Text startTextTutorial(font, "WASD - move\nSpace - shoot\nShift - Slow", 30);
+    startTextTutorial.setPosition(sf::Vector2f(100, window_sizef.y * 0.75f));
 
     // Start screen loop
     while (window.isOpen() && gamestate == 0){
@@ -45,7 +51,9 @@ int main()
             }
         }
         window.clear(sf::Color::Black);
-        window.draw(startText);
+        window.draw(startTextTitle);
+        window.draw(startTextPress);
+        window.draw(startTextTutorial);
         window.display();
     }
 
@@ -61,7 +69,7 @@ int main()
 	// Enemies will be chosen last from the queue, so the first enemy in the queue will be the last one to be spawned.
 	int killcount = 0;
 	std::vector<std::shared_ptr<Enemy>> enemiesQueue{
-        std::make_shared<Enemy>(50.0f, 50.0f, 20, 4, std::vector<int>{-1, -2, 5, 5}, std::string("./sprites/tontKolju32.png")),
+        std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-1, -2, 5}, std::string("./sprites/tontKolju32.png")),
         std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, 5, 5}, std::string("./sprites/tontKombits32.png")),
         std::make_shared<Enemy>(50.0f, 100.0f, 20, 3, std::vector<int>{-2, -2, 5}, std::string("./sprites/tontKolmik32.png")),
         std::make_shared<Enemy>(50.0f, 50.0f, 20, 3, std::vector<int>{-2, -1, 0}, std::string("./sprites/tontKolmik32.png")),
@@ -329,7 +337,10 @@ int main()
 
 	// Victory screen
     sf::Text VictoryText(font, "Tondid on alistatud!", 50);
-    VictoryText.setPosition(sf::Vector2f(window_sizef.x * 0.3f, window_sizef.y / 2));
+    VictoryText.setPosition(sf::Vector2f(window_sizef.x * 0.21f, window_sizef.y / 2));
+
+    sf::Text VictoryYippiee(font, "Yippiee!", 50);
+    VictoryYippiee.setPosition(sf::Vector2f(740, 100));
 
     sf::Texture victoryTexture;
     if (!victoryTexture.loadFromFile("./sprites/fumoPlush.png")) {
@@ -354,6 +365,7 @@ int main()
         }
         window.clear(sf::Color::Black);
         window.draw(VictoryText);
+        window.draw(VictoryYippiee);
         window.draw(victorySprite);
         window.display();
     }
