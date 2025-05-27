@@ -313,7 +313,7 @@ int main()
     }
 
     sf::Text GameOverText(font, "Game Over", 50);
-    GameOverText.setPosition(sf::Vector2f(window_sizef.x * 0.4f, window_sizef.y / 2));
+    GameOverText.setPosition(sf::Vector2f(window_sizef.x * 0.35f, window_sizef.y / 2));
 
     // Game over screen
     while (window.isOpen() && gamestate == 2) {
