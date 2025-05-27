@@ -5,10 +5,6 @@ Liikmed: Joonas Tiitson, Juhan Pauklin
 
 Projektiks on SFML teegiga tehtud mäng. Mäng on Space Invadersi või Touhou Projecti laadne bullet hell, kus mängija peab vastase kuulide eest põiklema ning neid vastu laskma.
 
-## Release
-
-Ette builditud ja kohe mängimiseks valmis mäng on saadaval [siit](https://drive.google.com/file/d/19M1qQXQ-p0ql99vJ0OOB1En5aPrZSYhX/view?usp=sharing)
-
 ## Projekti buildimine:
 
 Kasutasime projekti loomisel Microsoft Visual Studio 2022 (MITTE Visual Studio CODEi), mis teeb projekti haldamise hulga mugavamaks, kui Visual Studio Code.
