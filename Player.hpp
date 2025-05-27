@@ -15,9 +15,6 @@ public:
 	Player();
 	~Player();
 
-	// No need to re-implement getRadius, getHealth, getPosition, etc.
-	// Just use the ones from GameObject directly!
-
 	void setPosition(sf::Vector2f nposition) {
 		position = nposition;
 	}

@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <cmath>
-#include "Game_Object.hpp"  // Include the GameObject header
+#include "Game_Object.hpp"
 #include "Player.hpp"
 class Projectile : public GameObject {
 private:
@@ -29,11 +29,9 @@ public:
     Projectile(float nx, float ny, float speedMod, sf::Vector2f nmovement, std::shared_ptr<GameObject> enemy);
     ~Projectile();
 
-    // Getter and setter
     void setPosition(sf::Vector2f newPosition);
     sf::Vector2f getPosition();
 
-    // Override move function
     void move(float deltaTime);
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;

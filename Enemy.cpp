@@ -158,14 +158,12 @@ std::vector<std::shared_ptr<Projectile>> Enemy::shoot(Player& player) {
 }
 
 void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    //if (!isShown) return;
-
     sf::Sprite sprite(texture);
     sprite.setPosition(position);
 
 	if (turnRed > 0) {
 		sprite.setColor(sf::Color::Red);
-        turnRed--; // Reset after drawing
+        turnRed--;
 	}
 	else {
 		sprite.setColor(sf::Color::White);

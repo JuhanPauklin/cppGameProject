@@ -32,29 +32,27 @@ std::vector<std::shared_ptr<Projectile>> Player::shoot() {
         position.y + getRadius(),
         5.0f,
         movement.at(0),
-        shared_from_this() // pass the player obj
+        shared_from_this()
     ));
     shots_out.push_back(std::make_shared<Projectile>(
         position.x + getRadius(),
         position.y + getRadius(),
         5.0f,
         movement.at(1),
-        shared_from_this() // pass the player obj
+        shared_from_this()
     ));
     shots_out.push_back(std::make_shared<Projectile>(
         position.x + getRadius(),
         position.y + getRadius(),
         5.0f,
         movement.at(2),
-        shared_from_this() // pass the player obj
+        shared_from_this()
     ));
 
     return shots_out;
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    //if (!isShown) return;
-
     sf::Sprite sprite(texture);
     sprite.setPosition(position);
 
